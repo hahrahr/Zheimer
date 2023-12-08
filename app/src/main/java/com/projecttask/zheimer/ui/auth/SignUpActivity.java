@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText signup_username, signup_email,signup_phone, signup_password, signup_confirm_password;
     private Button signup_Button;
     private TextView loginRedirectbtn;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
         signup_confirm_password = findViewById(R.id.signup_confirm_password);
         signup_Button = findViewById(R.id.signup_button);
         loginRedirectbtn = findViewById(R.id.loginRedirectbtn);
+        progressBar = findViewById(R.id.RegisterProgressBar);
 
         signup_Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,32 +49,45 @@ public class SignUpActivity extends AppCompatActivity {
                 String confirmPass = signup_confirm_password.getText().toString().trim();
 
                 if (userName.isEmpty()) {
-                    signup_username.setError("User Name Cannot be Empty");
+                    Toast.makeText(SignUpActivity.this, "User Name Cannot be Empty", Toast.LENGTH_SHORT).show();
                     signup_username.findFocus();
                     return;
                 }if (user.isEmpty()) {
-                    signup_email.setError("Email Cannot be Empty");
+                    Toast.makeText(SignUpActivity.this, "Email Cannot be Empty", Toast.LENGTH_SHORT).show();
                     signup_email.findFocus();
                     return;
                 }if (phone.isEmpty()) {
-                    signup_phone.setError("Phone Cannot be Empty");
+                    Toast.makeText(SignUpActivity.this, "Phone Cannot be Empty", Toast.LENGTH_SHORT).show();
+                    signup_phone.findFocus();
+                    return;
+                }if (phone.length()<11) {
+                    Toast.makeText(SignUpActivity.this, "Phone Should be a 11 char", Toast.LENGTH_SHORT).show();
                     signup_phone.findFocus();
                     return;
                 }if (pass.isEmpty()) {
-                    signup_password.setError("Password Cannot be Empty");
+                    Toast.makeText(SignUpActivity.this, "Password Cannot be Empty", Toast.LENGTH_SHORT).show();
+                    signup_password.findFocus();
+                    return;
+                }if (pass.length()<6) {
+                    Toast.makeText(SignUpActivity.this, "Password Should be a 6 char", Toast.LENGTH_SHORT).show();
                     signup_password.findFocus();
                     return;
                 }if (confirmPass.isEmpty()) {
-                    signup_confirm_password.setError("Password Cannot be Empty");
+                    Toast.makeText(SignUpActivity.this, "Password Cannot be Empty", Toast.LENGTH_SHORT).show();
                     signup_confirm_password.findFocus();
                     return;
+                }if (!signup_confirm_password.equals(signup_password)) {
+                    Toast.makeText(SignUpActivity.this, "Confirm Password Should be Equal Your Password", Toast.LENGTH_SHORT).show();
+                    signup_confirm_password.findFocus();
                 }else{
                     auth.createUserWithEmailAndPassword(user, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                progressBar.setVisibility(View.VISIBLE);
                                 Toast.makeText(SignUpActivity.this, "Signup Successful", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+
                             } else {
                                 Toast.makeText(SignUpActivity.this, "Signup Failed" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
