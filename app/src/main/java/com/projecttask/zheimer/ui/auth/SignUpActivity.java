@@ -19,32 +19,53 @@ import com.projecttask.zheimer.R;
 
 public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth auth;
-    private EditText signup_email, signup_password;
+    private EditText signup_username, signup_email,signup_phone, signup_password, signup_confirm_password;
     private Button signup_Button;
-    private TextView loginRedirectText;
+    private TextView loginRedirectbtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         auth = FirebaseAuth.getInstance();
+        signup_username = findViewById(R.id.signup_UserName);
         signup_email = findViewById(R.id.signup_email);
+        signup_phone = findViewById(R.id.signup_phone);
         signup_password = findViewById(R.id.signup_password);
+        signup_confirm_password = findViewById(R.id.signup_confirm_password);
         signup_Button = findViewById(R.id.signup_button);
-        loginRedirectText = findViewById(R.id.loginRedirectText);
+        loginRedirectbtn = findViewById(R.id.loginRedirectbtn);
 
         signup_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String userName = signup_username.getText().toString().trim();
                 String user = signup_email.getText().toString().trim();
+                String phone = signup_phone.getText().toString().trim();
                 String pass = signup_password.getText().toString().trim();
+                String confirmPass = signup_confirm_password.getText().toString().trim();
 
-                if (user.isEmpty()) {
+                if (userName.isEmpty()) {
+                    signup_username.setError("User Name Cannot be Empty");
+                    signup_username.findFocus();
+                    return;
+                }if (user.isEmpty()) {
                     signup_email.setError("Email Cannot be Empty");
-                }
-                if (pass.isEmpty()) {
+                    signup_email.findFocus();
+                    return;
+                }if (phone.isEmpty()) {
+                    signup_phone.setError("Phone Cannot be Empty");
+                    signup_phone.findFocus();
+                    return;
+                }if (pass.isEmpty()) {
                     signup_password.setError("Password Cannot be Empty");
-                } else{
+                    signup_password.findFocus();
+                    return;
+                }if (confirmPass.isEmpty()) {
+                    signup_confirm_password.setError("Password Cannot be Empty");
+                    signup_confirm_password.findFocus();
+                    return;
+                }else{
                     auth.createUserWithEmailAndPassword(user, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -59,7 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
-        loginRedirectText.setOnClickListener(new View.OnClickListener() {
+        loginRedirectbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
