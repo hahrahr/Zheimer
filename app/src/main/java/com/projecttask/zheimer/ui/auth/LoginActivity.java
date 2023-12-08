@@ -28,7 +28,7 @@ import com.projecttask.zheimer.R;
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private EditText login_email, login_password;
-    private TextView SignUpRedirectBTN;
+    private TextView SignUpRedirectBTN,LoginForgetPasswordBTN;
     private Button loginButton;
     private ProgressBar LoginProgressBar;
 
@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         SignUpRedirectBTN = findViewById(R.id.SignUpRedirectBTN);
         loginButton = findViewById(R.id.login_button);
         LoginProgressBar = findViewById(R.id.LoginProgressBar);
+        LoginForgetPasswordBTN = findViewById(R.id.LoginForgetPasswordBTN);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override            public void onClick(View v) {
@@ -77,6 +78,12 @@ public class LoginActivity extends AppCompatActivity {
                     login_email.setError("Please Enter Valid Email");
                     Toast.makeText(LoginActivity.this, "Please Enter Valid Email", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        LoginForgetPasswordBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,ForgotPasswordActivity.class));
             }
         });
         SignUpRedirectBTN.setOnClickListener(new View.OnClickListener() {

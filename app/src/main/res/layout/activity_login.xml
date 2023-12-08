@@ -8,7 +8,7 @@
     android:gravity="center"
     android:background="@color/purple">
 
-
+    .ui.auth.ForgotPasswordActivity
 
 
     <LinearLayout
@@ -95,15 +95,36 @@
                 android:textSize="18sp"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/purple" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/loginforgetText"
+                android:text="Forget Password?"
+                android:layout_marginStart="15dp"
+                android:padding="5dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/Lavender"
+                android:textSize="18sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/LoginForgetPasswordBTN"
+                android:text="Reset"
+                android:layout_gravity="right"
+                android:textColor="@color/purple"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_marginTop="-32dp"
+                android:layout_marginRight="32dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/loginRedirectText"
                 android:text="Not yet Have Account?"
-                android:layout_marginStart="45dp"
+                android:layout_marginStart="15dp"
                 android:padding="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="157dp"
                 android:textColor="@color/Lavender"
                 android:textSize="18sp"/>
             <TextView
@@ -116,7 +137,7 @@
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:layout_marginTop="-32dp"
-                android:layout_marginRight="52dp"/>
+                android:layout_marginRight="32dp"/>
 
         </LinearLayout>
 
