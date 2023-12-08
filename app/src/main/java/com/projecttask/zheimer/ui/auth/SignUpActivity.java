@@ -76,7 +76,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(SignUpActivity.this, "Password Cannot be Empty", Toast.LENGTH_SHORT).show();
                     signup_confirm_password.findFocus();
                     return;
-                }if (!signup_confirm_password.equals(signup_password)) {
+                }if (!pass.equals(confirmPass)) {
                     Toast.makeText(SignUpActivity.this, "Confirm Password Should be Equal Your Password", Toast.LENGTH_SHORT).show();
                     signup_confirm_password.findFocus();
                 }else{

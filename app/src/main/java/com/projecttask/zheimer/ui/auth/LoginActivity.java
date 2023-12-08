@@ -1,14 +1,19 @@
 package com.projecttask.zheimer.ui.auth;
 
+import static com.projecttask.zheimer.R.id.LoginProgressBar;
+import static com.projecttask.zheimer.R.id.SignUpRedirectBTN;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +28,11 @@ import com.projecttask.zheimer.R;
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private EditText login_email, login_password;
-    private TextView signupRedirectText;
+    private TextView SignUpRedirectBTN;
     private Button loginButton;
+    private ProgressBar LoginProgressBar;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,8 +41,9 @@ public class LoginActivity extends AppCompatActivity {
         auth  = FirebaseAuth.getInstance();
         login_email = findViewById(R.id.login_email);
         login_password = findViewById(R.id.login_password);
-        signupRedirectText = findViewById(R.id.signupRedirectText);
+        SignUpRedirectBTN = findViewById(R.id.SignUpRedirectBTN);
         loginButton = findViewById(R.id.login_button);
+        LoginProgressBar = findViewById(R.id.LoginProgressBar);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override            public void onClick(View v) {
@@ -47,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
                                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                     @Override
                                     public void onSuccess(AuthResult authResult){
+                                        LoginProgressBar.setVisibility(View.VISIBLE);
                                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                         finish();
@@ -59,15 +68,18 @@ public class LoginActivity extends AppCompatActivity {
                                 });
                     }else {
                         login_password.setError("Password Cannot be Empty");
+                        Toast.makeText(LoginActivity.this, "Password Cannot be Empty", Toast.LENGTH_SHORT).show();
                     }
                 }else if (email.isEmpty()){
                     login_email.setError("Email Cannot be Empty");
+                    Toast.makeText(LoginActivity.this, "Email Cannot be Empty", Toast.LENGTH_SHORT).show();
                 }else {
                     login_email.setError("Please Enter Valid Email");
+                    Toast.makeText(LoginActivity.this, "Please Enter Valid Email", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        signupRedirectText.setOnClickListener(new View.OnClickListener() {
+        SignUpRedirectBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
