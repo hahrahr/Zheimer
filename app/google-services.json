@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1049183762793",
+    "project_id": "zheimer-d0822",
+    "storage_bucket": "zheimer-d0822.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049183762793:android:839662747d01893f6965f8",
+        "android_client_info": {
+          "package_name": "com.projecttask.zheimer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2-r9R-utxuFSrJ6BJK1sz2-lkcwOcSU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
