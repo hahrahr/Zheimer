@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.auth.SignUpActivity"
     android:orientation="vertical"
     android:gravity="center"
@@ -122,16 +123,35 @@
                 android:drawableLeft="@drawable/ic_lock"
                 android:drawablePadding="8dp"
                 android:textColor="@color/black"/>
-            <Button
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sign Up"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:id="@+id/signup_button"
-                android:textSize="18sp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/purple" />
+                android:layout_marginTop="20dp">
+
+                <ProgressBar
+                    android:id="@+id/RegisterProgressBar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="invisible" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/signup_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/purple"
+                    android:paddingStart="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="10dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:text="Sign Up"
+                    android:layout_below="@+id/forgetPasswordProgressbar"
+                    app:cornerRadius="10dp" />
+
+            </FrameLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -160,7 +180,7 @@
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/RegisterProgressBar"
+        android:id="@+id/RegisterProgressBarto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleX="0.3"

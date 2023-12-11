@@ -23,7 +23,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText signup_username, signup_email,signup_phone, signup_password, signup_confirm_password;
     private Button signup_Button;
     private TextView loginRedirectbtn;
-    private ProgressBar progressBar;
+    private ProgressBar progressBar ,RegisterProgressBarto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
         signup_Button = findViewById(R.id.signup_button);
         loginRedirectbtn = findViewById(R.id.loginRedirectbtn);
         progressBar = findViewById(R.id.RegisterProgressBar);
+        RegisterProgressBarto = findViewById(R.id.RegisterProgressBarto);
 
         signup_Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,8 +86,13 @@ public class SignUpActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 progressBar.setVisibility(View.VISIBLE);
+                                RegisterProgressBarto.setVisibility(View.VISIBLE);
+                                signup_Button.setVisibility(View.INVISIBLE);
                                 Toast.makeText(SignUpActivity.this, "Signup Successful", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                                progressBar.setVisibility(View.INVISIBLE);
+                                RegisterProgressBarto.setVisibility(View.INVISIBLE);
+                                signup_Button.setVisibility(View.VISIBLE);
 
                             } else {
                                 Toast.makeText(SignUpActivity.this, "Signup Failed" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
