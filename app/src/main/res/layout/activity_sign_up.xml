@@ -70,6 +70,8 @@
                 android:padding="8dp"
                 android:drawableLeft="@drawable/ic_personal"
                 android:drawablePadding="8dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="50"
                 android:textColor="@color/black"/>
             <EditText
                 android:id="@+id/signup_email"

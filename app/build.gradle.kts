@@ -42,4 +42,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation("com.google.firebase:firebase-firestore:24.10.0")
 
+    //ImageGif
+    implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.28")
+
 }
