@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.auth.SignUpActivity"
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/purple">
 
-    .ui.auth.ForgotPasswordActivity
 
 
     <LinearLayout
@@ -30,7 +30,7 @@
             android:layout_below="@+id/login_logo"
             android:text="@string/app_name"
             android:textStyle="bold"
-            android:textSize="30dp"
+            android:textSize="25dp"
             android:textColor="@color/white"
             android:layout_gravity="left"
             android:layout_marginStart="10dp"
@@ -83,74 +83,172 @@
                 android:inputType="textPassword"
                 android:drawableLeft="@drawable/ic_lock"
                 android:drawablePadding="8dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
 
-            <Button
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:id="@+id/login_button"
-                android:textSize="18sp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/purple" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/loginforgetText"
-                android:text="Forget Password?"
-                android:layout_marginStart="15dp"
-                android:padding="5dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/Lavender"
-                android:textSize="18sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/LoginForgetPasswordBTN"
-                android:text="Reset"
-                android:layout_gravity="right"
-                android:textColor="@color/purple"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:layout_marginTop="-32dp"
-                android:layout_marginRight="32dp"/>
+                android:layout_marginTop="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <ProgressBar
+                    android:id="@+id/LoginProgressBar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="invisible" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/login_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/forgetPasswordProgressbar"
+                    android:backgroundTint="@color/purple"
+                    android:paddingStart="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="10dp"
+                    android:text="Sign in"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="10dp" />
+
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/loginRedirectText"
-                android:text="Not yet Have Account?"
-                android:layout_marginStart="15dp"
-                android:padding="5dp"
-                android:layout_marginTop="157dp"
-                android:textColor="@color/Lavender"
-                android:textSize="18sp"/>
-            <TextView
-                android:layout_width="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/loginforgetText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Forget Password?"
+                    android:textColor="@color/Lavender"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/LoginForgetPasswordBTN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="32dp"
+                    android:text="Reset"
+                    android:textColor="@color/purple"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loginOr"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/SignUpRedirectBTN"
-                android:text="Sign up"
-                android:layout_gravity="right"
-                android:textColor="@color/purple"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:layout_marginTop="-32dp"
-                android:layout_marginRight="32dp"/>
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="___________________  or  ___________________"
+                    android:textColor="@color/grey"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <GridLayout
+                android:id="@+id/gridLayout"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@color/white"
+                android:columnCount="7"
+                android:rowCount="2">
+
+                <ImageView
+                    android:id="@+id/googleICon"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_google_login" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:textColor="@color/grey"
+                    android:layout_marginLeft="5dp"
+                    android:text="Google"
+                    android:textSize="20dp" />
+
+
+
+                <ImageView
+                    android:id="@+id/facebookICon"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_row="0"
+                    android:layout_column="2"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="55dp"
+                    android:src="@drawable/facebook" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_row="1"
+                    android:layout_column="2"
+                    android:layout_below="@+id/facebookICon"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="48dp"
+                    android:text="Facebook"
+                    android:textColor="@color/grey"
+                    android:textSize="20dp" />
+
+            </GridLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/loginRedirectText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Not yet Have Account?"
+                    android:textColor="@color/Lavender"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/SignUpRedirectBTN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Sign up"
+                    android:textColor="@color/purple"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
+
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/LoginProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleX="0.3"
-        android:scaleY="0.3"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:foregroundGravity="center"/>
 
 </RelativeLayout>

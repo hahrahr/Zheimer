@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -30,9 +32,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(com.projecttask.zheimer.R.layout.activity_forgot_password);
 
-        //Initializaton
+        //Initialization
         btnBack = findViewById(R.id.btnForgotPasswordBack);
         btnReset = findViewById(R.id.btnReset);
         edtEmail = findViewById(R.id.edtForgotPasswordEmail);
@@ -41,15 +46,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         //Reset Button Listener
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                strEmail = edtEmail.getText().toString().trim();
-                if (!TextUtils.isEmpty(strEmail)) {
-                    ResetPassword();
-                } else {
-                    edtEmail.setError("Email field can't be empty");
-                }
+        btnReset.setOnClickListener(v -> {
+            strEmail = edtEmail.getText().toString().trim();
+            if (!TextUtils.isEmpty(strEmail)) {
+                ResetPassword();
+            } else {
+                edtEmail.setError("Email field can't be Empty");
+                Toast.makeText(ForgotPasswordActivity.this, "Whrite Your Email Address to Send Reset Link", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -69,22 +72,15 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnReset.setVisibility(View.INVISIBLE);
 
         mAuth.sendPasswordResetEmail(strEmail)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(ForgotPasswordActivity.this, "Reset Password link has been sent to your registered Email", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(ForgotPasswordActivity.this, "Reset Password link has been sent to your registered Email", Toast.LENGTH_LONG).show();
+                    onBackPressed();
+                    finish();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ForgotPasswordActivity.this, "Error :- " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.INVISIBLE);
-                        btnReset.setVisibility(View.VISIBLE);
-                    }
+                .addOnFailureListener(e -> {
+                    Toast.makeText(ForgotPasswordActivity.this, "Error :- " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    btnReset.setVisibility(View.VISIBLE);
                 });
     }
 }
