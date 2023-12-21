@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.projecttask.zheimer.R;
@@ -116,8 +117,8 @@ public class SignUpActivity extends AppCompatActivity {
                         //Send Data to Firestore
                         String userId = firebaseAuth.getCurrentUser().getUid();
 
-                        Toast.makeText(this, "Send Data to Firebase Successful", Toast.LENGTH_SHORT).show();
                         sendData(userId, email, password, name, phone);
+                        Toast.makeText(this, "Send Data to Firebase Successful", Toast.LENGTH_SHORT).show();
 
                     } else {
                         Toast.makeText(SignUpActivity.this, "Signup Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -138,7 +139,7 @@ public class SignUpActivity extends AppCompatActivity {
         map.put("isDeleted", false);
 
         firestore.collection("users")
-                .document("userId")
+                .document()
                 .set(map)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -149,7 +150,7 @@ public class SignUpActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         signup_Button.setVisibility(View.VISIBLE);
                     } else {
-                        Toast.makeText(SignUpActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUpActivity.this, "Something wont wrong", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {

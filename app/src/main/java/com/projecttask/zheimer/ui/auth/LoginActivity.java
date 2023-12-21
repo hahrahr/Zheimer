@@ -78,8 +78,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = login_email.getText().toString();
-                String pass = login_password.getText().toString();
+                String email = login_email.getText().toString().trim();
+                String pass = login_password.getText().toString().trim();
                 if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     if (!pass.isEmpty()) {
                         firebaseAuth.signInWithEmailAndPassword(email, pass)
