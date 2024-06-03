@@ -6,6 +6,17 @@
     android:background="@color/purple"
     android:orientation="vertical"
     tools:context=".ui.IntroOneActivity">
+    <ProgressBar
+        android:id="@+id/intro_Progress_Bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:scaleY="3"
+        android:scaleX="3"
+        android:progressTint="@color/black"
+        android:foregroundTint="@color/black"
+        android:visibility="gone"/>
 
     <ImageView
         android:layout_width="150dp"

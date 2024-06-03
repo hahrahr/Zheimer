@@ -1,12 +1,7 @@
 package com.projecttask.zheimer.ui.auth;
 
-import static com.projecttask.zheimer.R.id.LoginProgressBar;
-import static com.projecttask.zheimer.R.id.SignUpRedirectBTN;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -17,10 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.projecttask.zheimer.MainActivity;
 import com.projecttask.zheimer.R;
@@ -28,12 +19,10 @@ import com.projecttask.zheimer.R;
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private EditText login_email, login_password;
-    private TextView SignUpRedirectBTN,LoginForgetPasswordBTN;
-    private Button loginButton;
+    public TextView SignUpRedirectBTN,LoginForgetPasswordBTN;
+    public Button loginButton;
     private ProgressBar LoginProgressBar;
 
-    @SuppressLint("MissingInflatedId")
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -46,51 +35,36 @@ public class LoginActivity extends AppCompatActivity {
         LoginProgressBar = findViewById(R.id.LoginProgressBar);
         LoginForgetPasswordBTN = findViewById(R.id.LoginForgetPasswordBTN);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override            public void onClick(View v) {
-                String email = login_email.getText().toString();
-                String pass = login_password.getText().toString();
-                if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    if (!pass.isEmpty()) {
-                        auth.signInWithEmailAndPassword(email, pass)
-                                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                    @Override
-                                    public void onSuccess(AuthResult authResult){
-                                        LoginProgressBar.setVisibility(View.VISIBLE);
-                                        Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                        finish();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                    }else {
-                        login_password.setError("Password Cannot be Empty");
-                        Toast.makeText(LoginActivity.this, "Password Cannot be Empty", Toast.LENGTH_SHORT).show();
-                    }
-                }else if (email.isEmpty()){
-                    login_email.setError("Email Cannot be Empty");
-                    Toast.makeText(LoginActivity.this, "Email Cannot be Empty", Toast.LENGTH_SHORT).show();
-                }else {
-                    login_email.setError("Please Enter Valid Email");
-                    Toast.makeText(LoginActivity.this, "Please Enter Valid Email", Toast.LENGTH_SHORT).show();
+        loginButton.setOnClickListener(v -> {
+            String email = login_email.getText().toString().trim();
+            String pass = login_password.getText().toString();
+            if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                if (!pass.isEmpty()) {
+                    LoginProgressBar.setVisibility(View.VISIBLE); // Show ProgressBar before the authentication starts
+                    auth.signInWithEmailAndPassword(email, pass)
+                            .addOnSuccessListener(authResult -> {
+                                Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                LoginProgressBar.setVisibility(View.GONE); // Hide ProgressBar after success
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                finish(); // Finish current activity to prevent going back to it
+
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(LoginActivity.this, "Login Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                LoginProgressBar.setVisibility(View.GONE); // Hide ProgressBar after failure
+                            });
+                } else {
+                    login_password.setError("Password Cannot be Empty");
+                    Toast.makeText(LoginActivity.this, "Password Cannot be Empty", Toast.LENGTH_SHORT).show();
                 }
+            } else if (email.isEmpty()) {
+                login_email.setError("Email Cannot be Empty");
+                Toast.makeText(LoginActivity.this, "Email Cannot be Empty", Toast.LENGTH_SHORT).show();
+            } else {
+                login_email.setError("Please Enter Valid Email");
+                Toast.makeText(LoginActivity.this, "Please Enter Valid Email", Toast.LENGTH_SHORT).show();
             }
         });
-        LoginForgetPasswordBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,ForgotPasswordActivity.class));
-            }
-        });
-        SignUpRedirectBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
-            }
-        });
+        LoginForgetPasswordBTN.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this,ForgotPasswordActivity.class)));
+        SignUpRedirectBTN.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this,SignUpActivity.class)));
     }
 }
