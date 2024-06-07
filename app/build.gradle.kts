@@ -24,8 +24,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
@@ -38,27 +38,45 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    // Firebase with email and pass auth
+    //Firebase with email and pass auth
     implementation("com.google.firebase:firebase-auth:22.3.0")
 
-    // Firebase Firestore
+    //Firebase Firestore
     implementation("com.google.firebase:firebase-firestore:24.10.0")
 
-    // Firebase with Google auth
+    //Firebase with Google auth
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 
-    // Google Signing Developer
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    //Google Signing Developer
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
 
-    // ImageGif
+
+
+
+
+
+    //ImageGif
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.28")
 
-    // CardView
+    //CardView
     implementation("androidx.cardview:cardview:1.0.0")
 
-    // Fragment
-    implementation("androidx.fragment:fragment:1.6.2")
 
-    // RecycleView
+
+    //Fragment
+    implementation("androidx.fragment:fragment:fragment_version =1.6.2")
+
+    //RecycleView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+
+
+
+
+
+
+
+
+
+
 }

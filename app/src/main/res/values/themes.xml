@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Zheimer" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimaryVariant">@color/Lavender</item>
+         <item name="colorPrimary">@color/purple</item>
+        <item name="colorPrimaryVariant">@color/purple</item>
     </style>
 
     <style name="Theme.Zheimer" parent="Base.Theme.Zheimer" />
