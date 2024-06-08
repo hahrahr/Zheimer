@@ -4,20 +4,23 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -30,32 +33,27 @@ import com.google.firebase.storage.StorageReference;
 import com.projecttask.zheimer.MainActivity;
 import com.projecttask.zheimer.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
 public class PatientSignUpActivity extends AppCompatActivity {
-
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private static final int CAMERA_REQUEST = 2;
     private static final int CAMERA_PERMISSION_REQUEST = 100;
     private static final int STORAGE_PERMISSION_REQUEST = 101;
-
-    private ImageView profileImage, BackArrow;
+    private ImageView profileImage;
     private Button uploadImageButton, takePhotoButton, signUpButton;
     private EditText nameEditText, emailEditText, phoneEditText, relationshipEditText, birthdateEditText, passwordEditText, confirmPasswordEditText;
     private ProgressBar progressBar;
-
-    private TextView genderKnow;
-
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
     private StorageReference storageReference;
-
     private Switch genderSwitch;
-    private Uri photoUri;
+    private String encodedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,100 +81,44 @@ public class PatientSignUpActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-
-        uploadImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(PatientSignUpActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(PatientSignUpActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_REQUEST);
-                } else {
-                    openFileChooser();
-                }
+        uploadImageButton.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(PatientSignUpActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(PatientSignUpActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_REQUEST);
+            } else {
+                openFileChooser();
             }
         });
 
-        takePhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(PatientSignUpActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(PatientSignUpActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(PatientSignUpActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_PERMISSION_REQUEST);
-                } else {
-                    openCamera();
-                }
+        takePhotoButton.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(PatientSignUpActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(PatientSignUpActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(PatientSignUpActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        CAMERA_PERMISSION_REQUEST);
+            } else {
+                openCamera();
             }
         });
 
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = nameEditText.getText().toString().trim();
-                String email = emailEditText.getText().toString().trim();
-                String phone = phoneEditText.getText().toString().trim();
-                String age = birthdateEditText.getText().toString().trim();
-                String relationship = relationshipEditText.getText().toString().trim();
-                String password = passwordEditText.getText().toString().trim();
-                String confirmPassword = confirmPasswordEditText.getText().toString().trim();
-                String gender = genderSwitch.isChecked() ? "Male" : "Female";
+        signUpButton.setOnClickListener(v -> {
+            String name = nameEditText.getText().toString().trim();
+            String email = emailEditText.getText().toString().trim();
+            String phone = phoneEditText.getText().toString().trim();
+            String age = birthdateEditText.getText().toString().trim();
+            String relationship = relationshipEditText.getText().toString().trim();
+            String password = passwordEditText.getText().toString().trim();
+            String confirmPassword = confirmPasswordEditText.getText().toString().trim();
+            String gender = genderSwitch.isChecked() ? "Male" : "Female";
 
-
-                if (name.isEmpty()) {
-                    Toast.makeText(PatientSignUpActivity.this, "Name Cannot be Empty", Toast.LENGTH_SHORT).show();
-                    nameEditText.requestFocus();
-                    return;
-                }
-                if (email.isEmpty()) {
-                    Toast.makeText(PatientSignUpActivity.this, "Email Cannot be Empty", Toast.LENGTH_SHORT).show();
-                    emailEditText.requestFocus();
-                    return;
-                }
-                if (phone.isEmpty()) {
-                    Toast.makeText(PatientSignUpActivity.this, "Phone Cannot be Empty", Toast.LENGTH_SHORT).show();
-                    phoneEditText.requestFocus();
-                    return;
-                }
-                if (phone.length() < 11) {
-                    Toast.makeText(PatientSignUpActivity.this, "Phone Should be 11 characters", Toast.LENGTH_SHORT).show();
-                    phoneEditText.requestFocus();
-                    return;
-                }
-                if (age.isEmpty()) {
-                    Toast.makeText(PatientSignUpActivity.this, "BirthDate Cannot be Empty", Toast.LENGTH_SHORT).show();
-                    birthdateEditText.requestFocus();
-                    return;
-                }
-                if (password.isEmpty()) {
-                    Toast.makeText(PatientSignUpActivity.this, "Password Cannot be Empty", Toast.LENGTH_SHORT).show();
-                    passwordEditText.requestFocus();
-                    return;
-                }
-                if (password.length() < 6) {
-                    Toast.makeText(PatientSignUpActivity.this, "Password Should be at least 6 characters", Toast.LENGTH_SHORT).show();
-                    passwordEditText.requestFocus();
-                    return;
-                }
-                if (confirmPassword.isEmpty()) {
-                    Toast.makeText(PatientSignUpActivity.this, "Confirm Password Cannot be Empty", Toast.LENGTH_SHORT).show();
-                    confirmPasswordEditText.requestFocus();
-                    return;
-                }
-                if (!password.equals(confirmPassword)) {
-                    Toast.makeText(PatientSignUpActivity.this, "Confirm Password Should be Equal to Your Password", Toast.LENGTH_SHORT).show();
-                    confirmPasswordEditText.requestFocus();
-                    return;
-                }
-
-
+            if (isSignUpDetailsValid(name, email, phone, age, password, confirmPassword)) {
                 register(email, password, name, phone, age, gender, relationship);
             }
         });
     }
 
     private void openFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        pickImage.launch(intent);
     }
 
     private void openCamera() {
@@ -189,9 +131,9 @@ public class PatientSignUpActivity extends AppCompatActivity {
                 ex.printStackTrace();
             }
             if (photoFile != null) {
-                photoUri = FileProvider.getUriForFile(this, "com.projecttask.zheimer.fileprovider", photoFile);
+                Uri photoUri = FileProvider.getUriForFile(this, "com.projecttask.zheimer.fileprovider", photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                startActivityForResult(intent, CAMERA_REQUEST);
+                pickImage.launch(intent);
             }
         }
     }
@@ -203,129 +145,122 @@ public class PatientSignUpActivity extends AppCompatActivity {
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_PERMISSION_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                openCamera();
-            } else {
-                Toast.makeText(this, "Camera and Storage permissions are required to take a photo", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == STORAGE_PERMISSION_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openFileChooser();
-            } else {
-                Toast.makeText(this, "Storage permission is required to upload a photo", Toast.LENGTH_SHORT).show();
-            }
-        }
+    private String encodedImage(Bitmap bitmap) {
+        int previewWidth = 150;
+        int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
+        Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri imageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                profileImage.setImageBitmap(bitmap);
-                uploadImageToFirebase(imageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoUri);
-                profileImage.setImageBitmap(bitmap);
-                uploadImageToFirebase(photoUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void uploadImageToFirebase(Uri imageUri) {
-        StorageReference fileReference = storageReference.child("profile_images/" + System.currentTimeMillis() + ".jpg");
-
-        fileReference.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-                    String imageUrl = uri.toString();
-                    Toast.makeText(PatientSignUpActivity.this, "Image Upload successful", Toast.LENGTH_SHORT).show();
-                    storeImageUrlInRealtimeDatabase(imageUrl);
-                }))
-                .addOnFailureListener(e -> Toast.makeText(PatientSignUpActivity.this, "Image Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    private void storeImageUrlInRealtimeDatabase(String imageUrl) {
-        String userId = auth.getCurrentUser().getUid();
-        if (userId != null) {
-            HashMap<String, Object> imageData = new HashMap<>();
-            imageData.put("profileImageUrl", imageUrl);
-
-            // You can store the image data in a custom path for each user in the database
-            FirebaseFirestore.getInstance().collection("users").document(userId).set(imageData)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(PatientSignUpActivity.this, "Image URL saved to database", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(PatientSignUpActivity.this, "Failed to save Image URL to database", Toast.LENGTH_SHORT).show();
+    private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri imageUri = result.getData().getData();
+                    try {
+                        InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        profileImage.setImageBitmap(bitmap);
+                        encodedImage = encodedImage(bitmap);
+                        if (encodedImage != null) {
+                            Toast.makeText(this, "Image encoded successfully", Toast.LENGTH_SHORT).show();
                         }
-                    });
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+    private boolean isSignUpDetailsValid(String name, String email, String phone, String birthdate, String password, String confirmPassword) {
+        if (encodedImage == null) {
+            showToast("Select profile image");
+            return false;
+        } else if (name.isEmpty()) {
+            showToast("Enter name");
+            return false;
+        } else if (email.isEmpty()) {
+            showToast("Enter email");
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            showToast("Enter valid email");
+            return false;
+        } else if (phone.isEmpty()) {
+            showToast("Enter phone number");
+            return false;
+        } else if (phone.length() < 11) {
+            showToast("Phone number should be 11 digits");
+            return false;
+        } else if (birthdate.isEmpty()) {
+            showToast("Enter birthdate");
+            return false;
+        } else if (password.isEmpty()) {
+            showToast("Enter password");
+            return false;
+        } else if (password.length() < 6) {
+            showToast("Password should be at least 6 characters");
+            return false;
+        } else if (confirmPassword.isEmpty()) {
+            showToast("Confirm your password");
+            return false;
+        } else if (!password.equals(confirmPassword)) {
+            showToast("Password and confirm password do not match");
+            return false;
         } else {
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return true;
         }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void register(String email, String password, String name, String phone, String birthdate, String gender, String relationship) {
         progressBar.setVisibility(View.VISIBLE);
-
-
-
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     progressBar.setVisibility(View.GONE);
                     if (task.isSuccessful()) {
                         sendEmailVerification();
-
                         String userId = auth.getCurrentUser().getUid();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String timestamp = dateFormat.format(new Date());
-                        HashMap<String, Object> userMap = new HashMap<>();
-                        userMap.put("name", name);
-                        userMap.put("email", email);
-                        userMap.put("password", password);
-                        userMap.put("phone", phone);
-                        userMap.put("age", birthdate);
-                        userMap.put("gender", gender);
-                        userMap.put("relationship to Petient", relationship);
-                        userMap.put("timestamp", timestamp);
-                        userMap.put("isDeleted", false);
-                        userMap.put("userType", "User"+"( "+relationship+" )");
+                        StorageReference imageReference = storageReference.child("patients/" + userId + "/profile.jpg");
 
-                        firestore.collection("users").document(userId).set(userMap).addOnCompleteListener(task1 -> {
-                            if (task1.isSuccessful()) {
-                                Toast.makeText(PatientSignUpActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(PatientSignUpActivity.this, MainActivity.class));
-                                finish();
-                            } else {
-                                Toast.makeText(PatientSignUpActivity.this, "Registration failed: " + task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        imageReference.putBytes(Base64.decode(encodedImage, Base64.DEFAULT))
+                                .addOnSuccessListener(taskSnapshot -> imageReference.getDownloadUrl()
+                                        .addOnSuccessListener(uri -> {
+                                            HashMap<String, Object> user = new HashMap<>();
+                                            user.put("userId", userId);
+                                            user.put("name", name);
+                                            user.put("email", email);
+                                            user.put("phone", phone);
+                                            user.put("birthdate", birthdate);
+                                            user.put("gender", gender);
+                                            user.put("relationship", relationship);
+                                            user.put("profileImage", uri.toString());
+
+                                            firestore.collection("patients").document(userId)
+                                                    .set(user)
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        Toast.makeText(getApplicationContext(), "Registration successful", Toast.LENGTH_SHORT).show();
+                                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                                        finish();
+                                                    })
+                                                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Failed to save user data", Toast.LENGTH_SHORT).show());
+                                        }))
+                                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Failed to upload profile image", Toast.LENGTH_SHORT).show());
                     } else {
-                        Toast.makeText(PatientSignUpActivity.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-
     private void sendEmailVerification() {
-        auth.getCurrentUser().sendEmailVerification()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(PatientSignUpActivity.this, "Verification email sent", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(PatientSignUpActivity.this, "Failed to send verification email", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if (auth.getCurrentUser() != null) {
+            auth.getCurrentUser().sendEmailVerification()
+                    .addOnSuccessListener(aVoid -> Toast.makeText(getApplicationContext(), "Verification email sent", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Failed to send verification email", Toast.LENGTH_SHORT).show());
+        }
     }
 }
