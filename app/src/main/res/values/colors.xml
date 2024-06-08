@@ -6,4 +6,6 @@
     <color name="grey">#E9E9E9</color>
     <color name="Lavender">#8692f7</color>
     <color name="Yellow">#FFFF00</color>
+    <color name="blue">#1F96DB</color>
+    <color name="red">#DC4444</color>
 </resources>

@@ -1,9 +1,4 @@
 package com.projecttask.zheimer.ui.auth;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,22 +8,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.projecttask.zheimer.R;
-import com.projecttask.zheimer.ui.auth.LoginActivity;
-
 public class ForgotPasswordActivity extends AppCompatActivity {
-
-    //Declaration
     Button btnReset, btnBack;
     EditText edtEmail;
     ProgressBar progressBar;
     FirebaseAuth mAuth;
     String strEmail;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,16 +24,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(com.projecttask.zheimer.R.layout.activity_forgot_password);
-
-        //Initialization
         btnBack = findViewById(R.id.btnForgotPasswordBack);
         btnReset = findViewById(R.id.btnReset);
         edtEmail = findViewById(R.id.edtForgotPasswordEmail);
         progressBar = findViewById(R.id.forgetPasswordProgressbar);
-
         mAuth = FirebaseAuth.getInstance();
-
-        //Reset Button Listener
         btnReset.setOnClickListener(v -> {
             strEmail = edtEmail.getText().toString().trim();
             if (!TextUtils.isEmpty(strEmail)) {

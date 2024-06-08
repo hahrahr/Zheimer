@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#EDE7F6">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back_arrow"
+            android:contentDescription="Back"
+            android:layout_gravity="start"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Doctor Sign Up"
+            android:textSize="24sp"
+            android:textColor="#673AB7"
+            android:layout_gravity="center"
+            android:paddingBottom="15dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_profilephotodoctor"
+            android:contentDescription="Profile Image"
+            android:layout_marginBottom="15dp" />
+
+        <RelativeLayout
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/upload_image_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="9dp"
+                android:backgroundTint="#673AB7"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:text="Upload Profile Image"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/take_photo_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#673AB7"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:text="Take Photo"
+                android:textColor="#FFFFFF" />
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/doctor_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Full Name"
+            android:layout_marginTop="15dp"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/doctor_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:layout_marginTop="7dp"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/doctor_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Phone Number"
+            android:layout_marginTop="7dp"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/doctor_specialty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Specialty"
+            android:layout_marginTop="7dp"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/doctor_graduation_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Graduation Date"
+            android:layout_marginTop="7dp"
+            android:inputType="date"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="true" />
+
+        <EditText
+            android:id="@+id/doctor_birthdate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="BirthDate"
+            android:layout_marginTop="7dp"
+            android:inputType="date" />
+
+        <EditText
+            android:id="@+id/doctor_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:layout_marginTop="7dp"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/doctor_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm Password"
+            android:layout_marginTop="7dp"
+            android:inputType="textPassword" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/gender_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Gender:"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="8dp"
+                android:textColor="#000000" />
+
+            <Switch
+                android:id="@+id/toggleSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="7dp"
+                android:layout_toEndOf="@id/gender_hint"
+                android:background="@android:color/transparent"
+                android:thumb="@drawable/switch_thumb"
+                android:track="@drawable/switch_track" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/doctor_sign_up_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="#673AB7"
+            android:textColor="#FFFFFF" />
+
+        <ProgressBar
+            android:id="@+id/register_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleX="0.3"
+            android:scaleY="0.3"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:foregroundGravity="center" />
+
+    </LinearLayout>
+</ScrollView>

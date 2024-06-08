@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "457103937476",
+    "firebase_url": "https://alzheimers-408215-default-rtdb.firebaseio.com",
     "project_id": "alzheimers-408215",
     "storage_bucket": "alzheimers-408215.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "457103937476-h99dh9ns6hk7r671ajv25p3807dui981.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.projecttask.zheimer",
+            "certificate_hash": "ec7d1a27b3f093280f69027a3842aa4e15445ffc"
+          }
+        },
         {
           "client_id": "457103937476-e0lkqhlskblbksk9uti3dg2t3ltosud6.apps.googleusercontent.com",
           "client_type": 3
