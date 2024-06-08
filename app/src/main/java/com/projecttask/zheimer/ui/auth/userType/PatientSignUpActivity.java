@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -109,9 +108,54 @@ public class PatientSignUpActivity extends AppCompatActivity {
             String confirmPassword = confirmPasswordEditText.getText().toString().trim();
             String gender = genderSwitch.isChecked() ? "Male" : "Female";
 
-            if (isSignUpDetailsValid(name, email, phone, age, password, confirmPassword)) {
-                register(email, password, name, phone, age, gender, relationship);
+            if (name.isEmpty()) {
+                Toast.makeText(PatientSignUpActivity.this, "Name Cannot be Empty", Toast.LENGTH_SHORT).show();
+                nameEditText.requestFocus();
+                return;
             }
+            if (email.isEmpty()) {
+                Toast.makeText(PatientSignUpActivity.this, "Email Cannot be Empty", Toast.LENGTH_SHORT).show();
+                emailEditText.requestFocus();
+                return;
+            }
+            if (phone.isEmpty()) {
+                Toast.makeText(PatientSignUpActivity.this, "Phone Cannot be Empty", Toast.LENGTH_SHORT).show();
+                phoneEditText.requestFocus();
+                return;
+            }
+            if (phone.length() < 11) {
+                Toast.makeText(PatientSignUpActivity.this, "Phone Should be 11 characters", Toast.LENGTH_SHORT).show();
+                phoneEditText.requestFocus();
+                return;
+            }
+            if (age.isEmpty()) {
+                Toast.makeText(PatientSignUpActivity.this, "BirthDate Cannot be Empty", Toast.LENGTH_SHORT).show();
+                birthdateEditText.requestFocus();
+                return;
+            }
+            if (password.isEmpty()) {
+                Toast.makeText(PatientSignUpActivity.this, "Password Cannot be Empty", Toast.LENGTH_SHORT).show();
+                passwordEditText.requestFocus();
+                return;
+            }
+            if (password.length() < 6) {
+                Toast.makeText(PatientSignUpActivity.this, "Password Should be at least 6 characters", Toast.LENGTH_SHORT).show();
+                passwordEditText.requestFocus();
+                return;
+            }
+            if (confirmPassword.isEmpty()) {
+                Toast.makeText(PatientSignUpActivity.this, "Confirm Password Cannot be Empty", Toast.LENGTH_SHORT).show();
+                confirmPasswordEditText.requestFocus();
+                return;
+            }
+            if (!password.equals(confirmPassword)) {
+                Toast.makeText(PatientSignUpActivity.this, "Confirm Password Should be Equal to Your Password", Toast.LENGTH_SHORT).show();
+                confirmPasswordEditText.requestFocus();
+                return;
+            }
+
+            register(email, password, name, phone, age, gender, relationship);
+
         });
     }
 
@@ -174,45 +218,6 @@ public class PatientSignUpActivity extends AppCompatActivity {
                 }
             });
 
-    private boolean isSignUpDetailsValid(String name, String email, String phone, String birthdate, String password, String confirmPassword) {
-        if (encodedImage == null) {
-            showToast("Select profile image");
-            return false;
-        } else if (name.isEmpty()) {
-            showToast("Enter name");
-            return false;
-        } else if (email.isEmpty()) {
-            showToast("Enter email");
-            return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            showToast("Enter valid email");
-            return false;
-        } else if (phone.isEmpty()) {
-            showToast("Enter phone number");
-            return false;
-        } else if (phone.length() < 11) {
-            showToast("Phone number should be 11 digits");
-            return false;
-        } else if (birthdate.isEmpty()) {
-            showToast("Enter birthdate");
-            return false;
-        } else if (password.isEmpty()) {
-            showToast("Enter password");
-            return false;
-        } else if (password.length() < 6) {
-            showToast("Password should be at least 6 characters");
-            return false;
-        } else if (confirmPassword.isEmpty()) {
-            showToast("Confirm your password");
-            return false;
-        } else if (!password.equals(confirmPassword)) {
-            showToast("Password and confirm password do not match");
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
@@ -238,7 +243,7 @@ public class PatientSignUpActivity extends AppCompatActivity {
                                             user.put("birthdate", birthdate);
                                             user.put("gender", gender);
                                             user.put("relationship", relationship);
-                                            user.put("profileImage", uri.toString());
+                                            user.put("profileImage", uri.toString() + imageReference);
 
                                             firestore.collection("patients").document(userId)
                                                     .set(user)
